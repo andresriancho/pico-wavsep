@@ -12,3 +12,8 @@ $ java -jar jenkins-winstone.jar --warfile=wavsep.war --useJasper --commonLibFol
 ```
 
 Browse to [localhost:8080](http://localhost:8080) and you'll have access to WAVSEP.
+
+TODO
+====
+ * Need to further investigate how to setup SQL engine for WAVSEP
+ 
