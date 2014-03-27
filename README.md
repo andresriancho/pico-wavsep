@@ -13,6 +13,13 @@ $ java -jar jenkins-winstone.jar --warfile=wavsep.war --useJasper --commonLibFol
 
 Browse to [localhost:8080](http://localhost:8080) and you'll have access to WAVSEP.
 
+Options
+=======
+
+It is possible to specify the listen ports using `--httpPort=8083 --ajp13Port=8084`.
+
+For more options take a look at the [winstone documentation](http://winstone.sourceforge.net/#commandLine)
+
 TODO
 ====
- * Need to further investigate how to setup SQL engine for WAVSEP
+ * Need to further investigate how to [setup SQL engine for WAVSEP](https://github.com/andresriancho/pico-wavsep/issues/1)
