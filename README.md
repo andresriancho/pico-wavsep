@@ -16,9 +16,21 @@ Browse to [localhost:8080](http://localhost:8080) and you'll have access to WAVS
 Options
 =======
 
-It is possible to specify the listen ports using `--httpPort=8083 --ajp13Port=8084`.
+It is possible to specify the listen ports using `--httpPort=8844 --ajp13Port=8845`.
 
 For more options take a look at the [winstone documentation](http://winstone.sourceforge.net/#commandLine)
+
+Easy Python Script
+==================
+
+_Requires Python 2.7+_
+
+Defines constants for `--httpPort=8844` and `--ajp13Port=8845`, which may be
+modified. To start up:
+
+```console
+$ start.py
+```
 
 TODO
 ====
