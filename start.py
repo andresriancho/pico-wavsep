@@ -73,19 +73,20 @@ MySQL Server 5.5 will be used to create a database at
 parser.add_argument('--use-existing', action='store_true',
 	                help='Use the already configured database.')
 parser.add_argument('--mysql-user', type=str, nargs='?', 
-	                default='root', help='MySQL Server admin user name',
-	                metavar='USER')
+	                default='root', metavar='USER',
+	                help='MySQL Server admin user name (default=root)')
 parser.add_argument('--mysql-pass', type=str, nargs='?', default='',
-                    help='MySQL Server admin password', metavar='PASS')
+                    help='MySQL Server admin password (defaults to no password)',
+                    metavar='PASS')
 parser.add_argument('--mysql-host', type=str, nargs='?', default='localhost',
-	                help='MySQL Server host (localhost is recommended)',
+	                help='MySQL Server host (default=localhost)',
 	                metavar='HOST')
 parser.add_argument('--mysql-port', type=int, nargs='?', default='3306',
-	                help='MySQL Server port')
+	                help='MySQL Server port (default=3306)')
 parser.add_argument('--http-port', type=int, nargs='?', default='8080',
-					help='Wavsep application HTTP port')
+					help='Wavsep application HTTP port (default=8080)')
 parser.add_argument('--ajp13-port', type=int, nargs='?', default='8009',
-					help='Wavsep application AJP13 port')
+					help='Wavsep application AJP13 port (default=8009)')
 args = parser.parse_args()
 fn_out = 'pico-wavsep.log'
 fn_err = 'pico-wavsep_err.log'
