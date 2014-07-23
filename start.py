@@ -10,23 +10,18 @@ from urllib import urlencode
 from urllib2 import urlopen, HTTPError
 
 TIMEOUT_SECONDS = 5
-WAVSEP_PORT = 8844
-AJP13_PORT = 8845
 SUCCESS_TEXT = 'Mysql configuration rows replaced to reflect a successful'
-
-installURL = \
-    'http://localhost:{}/wavsep-install/install.jsp'.format(WAVSEP_PORT)
 
 def print_body(body):
     stderr.write('Here is the response body: ')
     stderr.write(body)
     stderr.write('')
 
-def start_server():
+def start_server(args):
 	server = Popen(['java', '-jar', 'jenkins-winstone.jar', '--warfile=wavsep.war',
 	                '--useJasper', '-commonLibFolder=lib', 
-	                '--httpPort={}'.format(WAVSEP_PORT),
-	                '--ajp13Port={}'.format(AJP13_PORT)])
+	                '--httpPort={}'.format(args.http_port),
+	                '--ajp13Port={}'.format(args.ajp13_port)])
 	print 'Wavsep server process started with PID {}.'.format(server.pid)
 	return server
 
@@ -41,13 +36,15 @@ def setup_server(server, parser, args):
 		            'host':args.mysql_host, 'port':args.mysql_port,
 		            'wavsep_username':'', 'wavsep_password':''}
 	print 'Sending setup parameters: {}'.format(setup_params)
-	sleep(5)
+	sleep(TIMEOUT_SECONDS)
+	installURL = \
+		'http://localhost:{}/wavsep-install/install.jsp'.format(args.http_port)
 	print 'Sending setup request to "{}"'.format(installURL)
 	try:
-	    response = urlopen(installURL, urlencode(setup_params), 
-	    	               TIMEOUT_SECONDS)
-	    body = response.read()
-	    code = response.getcode()
+		response = urlopen(installURL, urlencode(setup_params), 
+							TIMEOUT_SECONDS)
+		body = response.read()
+		code = response.getcode()
 	except HTTPError as http_error:
 		body = http_error.reason
 		code = http_error.code
@@ -68,23 +65,12 @@ def setup_server(server, parser, args):
 		parser.error('Unexpected response code to setup request: {}'.format(
 			code))
 
-def start(parser, args):
-    if args.use_existing:
-        if isdir(abspath('db/WavsepConfigDB')):
-		    server = start_server()
-		    wait_for_enter(parser, server)
-        else:
-        	parser.error('No database found at {}/db'.format(getcwd()));
-    else:
-        server = start_server()
-        setup_server(server, parser, args)
-
 parser = ArgumentParser(description ='''Launch and configure wavsep.
 MySQL Server 5.5 will be used to create a database at 
 {}/db'''.format(getcwd()))
 parser.add_argument('--use-existing', action='store_true',
 	                help='Use the already configured database.')
-parser.add_argument('--mysql-user', type=str, nargs='?', const='root', 
+parser.add_argument('--mysql-user', type=str, nargs='?', 
 	                default='root', help='MySQL Server admin user name',
 	                metavar='USER')
 parser.add_argument('--mysql-pass', type=str, nargs='?', default='',
@@ -93,6 +79,18 @@ parser.add_argument('--mysql-host', type=str, nargs='?', default='localhost',
 	                help='MySQL Server host (localhost is recommended)',
 	                metavar='HOST')
 parser.add_argument('--mysql-port', type=int, nargs='?', default='3306',
-	                help='MySQL Server port', metavar='PORT')
+	                help='MySQL Server port')
+parser.add_argument('--http-port', type=int, nargs='?', default='8080',
+					help='Wavsep application HTTP port')
+parser.add_argument('--ajp13-port', type=int, nargs='?', default='8009',
+					help='Wavsep application AJP13 port')
 args = parser.parse_args()
-start(parser, args)
+if args.use_existing:
+    if isdir(abspath('db/WavsepConfigDB')):
+	    server = start_server(args)
+	    wait_for_enter(parser, server)
+    else:
+    	parser.error('No database found at {}/db'.format(getcwd()));
+else:
+    server = start_server(args)
+    setup_server(server, parser, args)
