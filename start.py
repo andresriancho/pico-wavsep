@@ -99,6 +99,7 @@ server_err = open(fn_err, 'w')
 if args.use_existing:
     if isfile(abspath(fn_args)):
 	    with open(fn_args) as argsfile:
+	    	print 'Loading parameters from {}'.format(fn_args)
 	    	args = load(argsfile)
     else:
     	parser.error("You can't invoke --use-existing when you have no previous sessions.");

@@ -77,7 +77,7 @@ rather creatively set to `Pa$$w0rd`. Let's do that:
 
 ```console
 $ ./start.py --mysql-pass "Pa\$\$w0rd"
-Wavsep server process started with PID 11793.
+Wavsep server process started with PID 3387.
 Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
 Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
 Waiting a moment for server to initialize.
@@ -85,21 +85,30 @@ Sending setup request to http://localhost:8080/wavsep-install/install.jsp
 with parameters {'username': 'root', 'wavsep_password': '', 'host': 'localhost', 'wavsep_username': '', 'password': 'Pa$$w0rd', 'port': 3306}
 Got Success (200) response code from our setup request.
 Wavsep setup request completed successully.
+Saving parameters to args.pickle
 Press Enter to terminate.
 
 Successful wavsep shutdown.
 ```
 
 In the above session, Wavsep started _and_ installed its database
-successfully. I had to hit Enter to shut the server down. There is the
-`--use-existing` flag that lets us restart the server without having
-to install the databse, which is presumed installed.
+successfully. At that point, it saved the parameters for future use. I had to
+hit Enter to shut the server down. The next time, it is possible to give the
+`--use-existing` flag:
+
 
 ```console
 $ ./start.py --use-existing
-Wavsep server process started with PID 11850.
+Loading parameters from args.pickle
+Wavsep server process started with PID 3542.
 Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
 Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
+Waiting a moment for server to initialize.
+Sending setup request to http://localhost:8080/wavsep-install/install.jsp
+with parameters {'username': 'root', 'wavsep_password': '', 'host': 'localhost', 'wavsep_username': '', 'password': 'Pa$$w0rd', 'port': 3306}
+Got Success (200) response code from our setup request.
+Wavsep setup request completed successully.
+Saving parameters to args.pickle
 Press Enter to terminate.
 
 Successful wavsep shutdown.
