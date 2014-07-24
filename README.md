@@ -36,7 +36,7 @@ Launch and configure wavsep. MySQL Server 5.5 will be used to create a database 
 
 optional arguments:
   -h, --help            show this help message and exit
-  --use-existing        Use the already configured database.
+  --use-existing        Use the previously saved successful parameters.
   --mysql-user [USER]   MySQL Server admin user name (default=root)
   --mysql-pass [PASS]   MySQL Server admin password (defaults to no password)
   --mysql-host [HOST]   MySQL Server host (default=localhost)
@@ -46,7 +46,6 @@ optional arguments:
                         Wavsep application HTTP port (default=8080)
   --ajp13-port [AJP13_PORT]
                         Wavsep application AJP13 port (default=8009)
-
 ```
 
 Notice that wavsep will be needing MySQL 5.5 to be installed on your system.
@@ -92,8 +91,8 @@ Successful wavsep shutdown.
 ```
 
 In the above session, Wavsep started _and_ installed its database
-successfully. At that point, it saved the parameters for future use. I had to
-hit Enter to shut the server down. The next time, it is possible to give the
+successfully. At that point, it saved the parameters for future use. Hitting
+Enter shuts the server down. The next time, it is possible to give the
 `--use-existing` flag:
 
 

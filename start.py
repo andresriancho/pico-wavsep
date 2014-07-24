@@ -74,7 +74,7 @@ parser = ArgumentParser(description ='''Launch and configure wavsep.
 MySQL Server 5.5 will be used to create a database at 
 {}/db'''.format(getcwd()))
 parser.add_argument('--use-existing', action='store_true',
-	                help='Use the already configured database.')
+	                help='Use the previously saved successful parameters.')
 parser.add_argument('--mysql-user', type=str, nargs='?', 
 	                default='root', metavar='USER',
 	                help='MySQL Server admin user name (default=root)')
