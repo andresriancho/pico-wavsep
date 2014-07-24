@@ -25,13 +25,82 @@ Easy Python Script
 
 _Requires Python 2.7+_
 
-Defines constants for `--httpPort=8844` and `--ajp13Port=8845`, which may be
-modified. To start up:
+First, lets see what help is offered by the script:
 
 ```console
-$ start.py
+$ ./start.py --help
+usage: start.py [-h] [--use-existing] [--mysql-user [USER]] [--mysql-pass [PASS]] [--mysql-host [HOST]] [--mysql-port [MYSQL_PORT]] [--http-port [HTTP_PORT]]
+                [--ajp13-port [AJP13_PORT]]
+
+Launch and configure wavsep. MySQL Server 5.5 will be used to create a database at /home/dale/Documents/git/pico-wavsep/db
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --use-existing        Use the already configured database.
+  --mysql-user [USER]   MySQL Server admin user name (default=root)
+  --mysql-pass [PASS]   MySQL Server admin password (defaults to no password)
+  --mysql-host [HOST]   MySQL Server host (default=localhost)
+  --mysql-port [MYSQL_PORT]
+                        MySQL Server port (default=3306)
+  --http-port [HTTP_PORT]
+                        Wavsep application HTTP port (default=8080)
+  --ajp13-port [AJP13_PORT]
+                        Wavsep application AJP13 port (default=8009)
+
 ```
 
-TODO
-====
- * Need to further investigate how to [setup SQL engine for WAVSEP](https://github.com/andresriancho/pico-wavsep/issues/1)
+Notice that wavsep will be needing MySQL 5.5 to be installed on your system.
+On my system this was accomplished with
+`sudo apt-get install mysql-server-5.5`.
+
+Let's see what happens if we just launch the script with no arguments, not
+having previously "installed" the wavsep database.
+
+```console
+$ ./start.py
+Wavsep server process started with PID 11738.
+Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
+Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
+Waiting a moment for server to initialize.
+Sending setup request to http://localhost:8080/wavsep-install/install.jsp
+with parameters {'username': 'root', 'wavsep_password': '', 'host': 'localhost', 'wavsep_username': '', 'password': '', 'port': 3306}
+Got Success (200) response code from our setup request.
+usage: start.py [-h] [--use-existing] [--mysql-user [USER]] [--mysql-pass [PASS]] [--mysql-host [HOST]] [--mysql-port [MYSQL_PORT]] [--http-port [HTTP_PORT]]
+                [--ajp13-port [AJP13_PORT]]
+start.py: error: Expected to see this in response: "Mysql configuration rows replaced to reflect a successful installation"
+```
+
+It turns out that not all steps could be completed. If you inspect the
+`pico-wavsep*.log` files, Wavsep isn't very helpful, but it turns out that
+the problem in this case is that I didn't provide the password, which I had
+rather creatively set to `Pa$$w0rd`. Let's do that:
+
+```console
+$ ./start.py --mysql-pass "Pa\$\$w0rd"
+Wavsep server process started with PID 11793.
+Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
+Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
+Waiting a moment for server to initialize.
+Sending setup request to http://localhost:8080/wavsep-install/install.jsp
+with parameters {'username': 'root', 'wavsep_password': '', 'host': 'localhost', 'wavsep_username': '', 'password': 'Pa$$w0rd', 'port': 3306}
+Got Success (200) response code from our setup request.
+Wavsep setup request completed successully.
+Press Enter to terminate.
+
+Successful wavsep shutdown.
+```
+
+In the above session, Wavsep started _and_ installed its database
+successfully. I had to hit Enter to shut the server down. There is the
+`--use-existing` flag that lets us restart the server without having
+to install the databse, which is presumed installed.
+
+```console
+$ ./start.py --use-existing
+Wavsep server process started with PID 11850.
+Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
+Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
+Press Enter to terminate.
+
+Successful wavsep shutdown.
+```
