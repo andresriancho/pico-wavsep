@@ -75,7 +75,7 @@ the problem in this case is that I didn't provide the password, which I had
 rather creatively set to `Pa$$w0rd`. Let's do that:
 
 ```console
-$ ./start.py --mysql-pass "Pa\$\$w0rd"
+$ ./start.py --mysql-pass 'Pa$$w0rd'
 Wavsep server process started with PID 3387.
 Server normal messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep.log
 Server error messages are being sent to /home/dale/Documents/git/pico-wavsep/pico-wavsep_err.log
