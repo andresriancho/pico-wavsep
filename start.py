@@ -2,7 +2,8 @@
 
 from argparse import ArgumentParser
 from os import getcwd
-from os.path import abspath, isdir
+from os.path import abspath, isdir, isfile
+from pickle import load, dump
 from subprocess import Popen
 from sys import stdin, stderr
 from time import sleep
@@ -28,13 +29,7 @@ def start_server(args):
 	print 'Server error messages are being sent to {}/{}'.format(getcwd(), fn_err)
 	return server
 
-def wait_for_enter(parser, server):
-    print 'Press Enter to terminate.'
-    stdin.read(1)
-    server.terminate()
-    parser.exit('Successful wavsep shutdown.')
-
-def setup_server(server, parser, args):
+def setup_server(server, parser, args, fn_args):
 	print('Waiting a moment for server to initialize.')
 	sleep(TIMEOUT_SECONDS)
 	installURL = \
@@ -58,7 +53,15 @@ def setup_server(server, parser, args):
 	    print 'Got Success (200) response code from our setup request.'
 	    if SUCCESS_TEXT in body:
 	        print 'Wavsep setup request completed successully.'
-	        wait_for_enter(parser, server)
+	        print 'Saving parameters to {}'.format(fn_args)
+	        with open(fn_args, 'w') as argsfile:
+	        	dump(args, argsfile)
+    		print 'Press Enter to terminate.'
+    		try:
+    			stdin.read(1)
+    		finally:
+    			server.terminate()
+    			parser.exit('Successful wavsep shutdown.')
 	    else:
 	    	server.terminate()
 	    	parser.error('Expected to see this in response: "{}"'.format(SUCCESS_TEXT))
@@ -88,16 +91,17 @@ parser.add_argument('--http-port', type=int, nargs='?', default='8080',
 parser.add_argument('--ajp13-port', type=int, nargs='?', default='8009',
 					help='Wavsep application AJP13 port (default=8009)')
 args = parser.parse_args()
+fn_args = 'args.pickle'
 fn_out = 'pico-wavsep.log'
 fn_err = 'pico-wavsep_err.log'
 server_out = open(fn_out, 'w')
 server_err = open(fn_err, 'w')
 if args.use_existing:
-    if isdir(abspath('db/WavsepConfigDB')):
-	    server = start_server(args)
-	    wait_for_enter(parser, server)
+    if isfile(abspath(fn_args)):
+	    with open(fn_args) as argsfile:
+	    	args = load(argsfile)
     else:
-    	parser.error('No database found at {}/db'.format(getcwd()));
-else:
-    server = start_server(args)
-    setup_server(server, parser, args)
+    	parser.error("You can't invoke --use-existing when you have no previous sessions.");
+
+server = start_server(args)
+setup_server(server, parser, args, fn_args)
