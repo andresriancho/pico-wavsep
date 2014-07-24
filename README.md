@@ -70,7 +70,7 @@ start.py: error: Expected to see this in response: "Mysql configuration rows rep
 ```
 
 It turns out that not all steps could be completed. If you inspect the
-`pico-wavsep*.log` files, Wavsep isn't very helpful, but it turns out that
+`pico-wavsep*.log` files, wavsep isn't very helpful, but it turns out that
 the problem in this case is that I didn't provide the password, which I had
 rather creatively set to `Pa$$w0rd`. Let's do that:
 
@@ -90,7 +90,7 @@ Press Enter to terminate.
 Successful wavsep shutdown.
 ```
 
-In the above session, Wavsep started _and_ installed its database
+In the above session, wavsep started _and_ installed its database
 successfully. At that point, it saved the parameters for future use. Hitting
 Enter shuts the server down. The next time, it is possible to give the
 `--use-existing` flag:
