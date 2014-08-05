@@ -2,4 +2,5 @@ derby.log
 db/
 pico-wavsep.log
 pico-wavsep_err.log
-args.pickle
+wavsep-installed.txt
+start.log
