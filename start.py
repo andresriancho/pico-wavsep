@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from os import getcwd
 from os.path import abspath, isdir, isfile
 from pickle import load, dump
-from subprocess import Popen
+from subprocess import CalledProcessError, Popen
 from sys import argv, stdin, stderr
 from time import sleep
 from urllib import urlencode
@@ -94,24 +94,29 @@ parser.add_argument('--out', type=str, nargs='?', default=fn_out,
 args = parser.parse_args()
 install = ' '.join(argv[1:]).find('--mysql') >= 0
 logging.debug("Install Server? {}".format(install))
-previous = False
-if isfile(abspath(fn_flag)):
-	with open(fn_flag) as flagfile:
-		logging.debug('Loading parameters from {}'.format(fn_flag))
-		previous = load(flagfile)
-logging.debug('Previous install detected? {}'.format(previous))
-if (not previous and not install):
-	parser.error('No "db" directory found. Please provide at least one explicit --mysql-* argument.')
+if not install:
+	previous = False
+	if isfile(abspath(fn_flag)):
+		with open(fn_flag) as flagfile:
+			logging.debug('Loading parameters from {}'.format(fn_flag))
+			previous = load(flagfile)
+	logging.debug('Previous install detected? {}'.format(previous))
+	if not previous:
+		parser.error('No "db" directory found. Please provide at least one explicit --mysql-* argument.')
 fn_out = args.out
 fn_err = 'pico-wavsep_err.log'
 server_out = open(fn_out, 'w')
 server_err = open(fn_err, 'w')
-server = start_server(args)
-if install:
-    install_db(server, parser, args, fn_flag)
-print 'Press Enter to terminate.'
 try:
-	stdin.read(1)
+	server = start_server(args)
+	if install:
+	    install_db(server, parser, args, fn_flag)
+	server.wait()
+except KeyboardInterrupt as ki:
+	logging.debug("Keyboard interrupt (likely CTRL-C.")
+except CalledProcessError as cpe:
+	logging.debug(
+		"Exited Java process with exit code: {}".format(cpe.returncode))
 finally:
+	logging.info('Attempting to shut down server.')
 	server.terminate()
-	parser.exit('Successful wavsep shutdown.')
