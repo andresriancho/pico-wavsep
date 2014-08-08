@@ -74,10 +74,9 @@ Server normal messages are being sent to pico-wavsep.log
 Server error messages are being sent to pico-wavsep_err.log
 Waiting a moment for server to initialize.
 Wavsep setup request completed successully.
-Press Enter to terminate.
-
-Successful wavsep shutdown.
 ```
+
+Success! To shut down the server, press CTRL-C.
 
 In the above session, wavsep started _and_ installed its database
 successfully. At that point, `start.py` also created a special file, `wavsep-installed.txt`, which
@@ -90,7 +89,4 @@ $ ./start.py
 Wavsep server process started with PID 6063.
 Server normal messages are being sent to pico-wavsep.log
 Server error messages are being sent to pico-wavsep_err.log
-Press Enter to terminate.
-
-Successful wavsep shutdown.
 ``` 
