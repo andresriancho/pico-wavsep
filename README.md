@@ -2,7 +2,7 @@
 
 A minimalistic way to run [WAVSEP](https://github.com/sectooladdict/wavsep)
 
-## Manually running the script
+### Manually running the script
 
 Lets see what `--help` is offered by the script:
 
@@ -40,7 +40,8 @@ $ ./start.py
 usage: start.py [-h] [--mysql-user [USER]] [--mysql-pass [PASS]]
                 [--mysql-host [HOST]] [--mysql-port [MYSQL_PORT]]
                 [--http-port [HTTP_PORT]] [--ajp13-port [AJP13_PORT]] [--out [OUT]]
-start.py: error: No "db" directory found. Please provide at least one explicit --mysql-* argument.
+start.py: error: No "db" directory found. Please provide at least one explicit 
+          --mysql-* argument.
 ```
 
 The script detects I've never installed the WAVSEP database before. Let's
