@@ -26,10 +26,10 @@ test:
   override:
     # Run the recently built image and mysql
     - sudo docker-compose --project-name test up -d
-    - sleep 30
+    - sleep 60
 
     # Smoke test
-    - curl http://127.0.0.1:8098/active/SInjection-Detection-Evaluation-GET-200Error/Case01-InjectionInLogin-String-LoginBypass-With200Errors.jsp?username=textvalue&password=textvalue2 | grep "login failed"
+    - curl "http://127.0.0.1:8098/active/SInjection-Detection-Evaluation-GET-200Error/Case01-InjectionInLogin-String-LoginBypass-With200Errors.jsp?username=textvalue&password=textvalue2" | grep "login failed"
 
 
 deployment:
