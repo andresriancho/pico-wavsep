@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Wait for database to get available
+MYSQL_LOOPS="20"
+MYSQL_HOST="wavsepdb"
+MYSQL_PORT="3306"
+
+# Wait for mysql
+i=0
+while ! nc ${MYSQL_HOST} ${MYSQL_PORT} >/dev/null 2>&1 < /dev/null; do
+  i=`expr ${i} + 1`
+  if [ ${i} -ge ${MYSQL_LOOPS} ]; then
+    echo "$(date) - ${MYSQL_HOST}:${MYSQL_PORT} still not reachable, giving up"
+    exit 1
+  fi
+  echo "$(date) - waiting for ${MYSQL_HOST}:${MYSQL_PORT}..."
+  sleep 1
+done
+
+echo
+echo "Start the daemon to process the configuration requests"
+java -jar jenkins-winstone.jar --warfile=wavsep.war \
+                               --useJasper \
+                               -commonLibFolder=lib \
+                               --httpPort=8080 \
+                               --ajp13Port=8081 &
+sleep 5
+
+echo
+echo "Configure the WAVSEP database settings"
+curl --data "username=root&password=wavsep&host=wavsepdb&port=3306&wavsep_username=wavsep&wavsep_password=wavsepPass782" http://localhost:8080/wavsep-install/install.jsp
+
+echo
+echo "Re-creating WAVSEP db user"
+echo "drop user 'wavsep'@'wavsepdb';" > grant.sql
+echo "GRANT ALL PRIVILEGES ON *.* TO 'wavsep'@'%' IDENTIFIED BY 'wavsepPass782';" >> grant.sql
+echo "FLUSH PRIVILEGES;" >> grant.sql
+mysql -u root -h ${MYSQL_HOST} -pwavsep < grant.sql
+
+echo
+echo "Killing configuration daemon"
+pkill -f jenkins-winstone.jar
+
+echo
+echo "Start the daemon"
+java -jar jenkins-winstone.jar --warfile=wavsep.war \
+                               --useJasper \
+                               -commonLibFolder=lib \
+                               --httpPort=8080 \
+                               --ajp13Port=8081
