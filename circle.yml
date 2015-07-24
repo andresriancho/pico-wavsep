@@ -29,8 +29,7 @@ test:
     - sleep 10
 
     # Smoke test
-    - curl /active/SInjection-Detection-Evaluation-GET-200Error/Case01-InjectionInLogin-String-LoginBypass-With200Errors.jsp?username=textvalue&password=textvalue2
-    - curl /active/SInjection-Detection-Evaluation-GET-200Error/Case01-InjectionInLogin-String-LoginBypass-With200Errors.jsp?username=textvalue&password=textvalue2 | grep "Remote code execution"
+    - curl http://127.0.0.1:8098/active/SInjection-Detection-Evaluation-GET-200Error/Case01-InjectionInLogin-String-LoginBypass-With200Errors.jsp?username=textvalue&password=textvalue2 | grep "login failed"
 
 
 deployment:
