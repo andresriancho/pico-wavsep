@@ -2,7 +2,18 @@
 
 A minimalistic way to run [WAVSEP](https://github.com/sectooladdict/wavsep)
 
-### Manually running the script
+### Docker
+
+```bash
+git clone git@github.com:andresriancho/pico-wavsep.git
+cd pico-wavsep
+docker-compose --project-name test up
+```
+
+Wait until the containers start and then browse to [http://localhost:8098/](http://localhost:8098/),
+the MySQL database is run and configured using docker. 
+
+### Manually running pico WAVSEP
 
 Lets see what `--help` is offered by the script:
 
