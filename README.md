@@ -7,7 +7,7 @@ A minimalistic way to run [WAVSEP](https://github.com/sectooladdict/wavsep)
 ```bash
 git clone git@github.com:andresriancho/pico-wavsep.git
 cd pico-wavsep
-docker-compose --project-name test up
+docker-compose up
 ```
 
 Wait until the containers start and then browse to [http://localhost:8098/](http://localhost:8098/),
