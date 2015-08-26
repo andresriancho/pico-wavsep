@@ -26,7 +26,22 @@ java -jar jenkins-winstone.jar --warfile=wavsep.war \
                                -commonLibFolder=lib \
                                --httpPort=8080 \
                                --ajp13Port=8081 &
-sleep 5
+
+WAVSEP_LOOPS="20"
+WAVSEP_HOST="127.0.0.1"
+WAVSEP_PORT="8080"
+
+# Wait for WAVSEP
+i=0
+while ! nc ${WAVSEP_HOST} ${WAVSEP_PORT} >/dev/null 2>&1 < /dev/null; do
+  i=`expr ${i} + 1`
+  if [ ${i} -ge ${WAVSEP_LOOPS} ]; then
+    echo "$(date) - ${WAVSEP_HOST}:${WAVSEP_PORT} still not reachable, giving up"
+    exit 1
+  fi
+  echo "$(date) - waiting for ${WAVSEP_HOST}:${WAVSEP_PORT}..."
+  sleep 1
+done
 
 echo
 echo "Configure the WAVSEP database settings"
